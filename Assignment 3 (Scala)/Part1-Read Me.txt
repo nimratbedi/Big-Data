@@ -1,0 +1,52 @@
+
+For building from command line:
+Use the Given Source code and build.sbt file to create a project and follow the steps
+ 1.Go to project root directory in command prompt and build by following commands
+    >sbt
+ 2.After sbt 
+    > assembly
+This will create a fat jar file containing all the dependencies.
+
+
+To run the Spark Project from command line:
+
+1.To start Zookeeper go into Kafka root directory
+	bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+
+2.To start Kafka server go into Kafka root directory 
+	bin\windows\kafka-server-start.bat config\server.properties
+
+3.Create a Topic by using step a , which will be named "according to your choice" like here we used "India". After this, use the producer utility to generate messages on created topic 
+   using step b
+	(Note: It is desirable to use name of the topic that was already configured in your logstash conf file)
+	a. bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic "Created Topic name"
+	b. bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic "Created Topic name"
+
+4.Start the consumer using below command and created topic name.(you can remove --from-beginning if old streaming results are unnecessary)
+	bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic "Created Topic name" --from-beginning
+
+5.Execute the SentimentAnalysis class by spark-submit with exceutable jar file path, created topic name as one argument and keyword we need to search as another argument, we can also give multiple key words with spaces
+	spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 --class SentimentAnalysis ".\xxx\xxx\SentimentAnalysis-assembly-0.1.jar" "Created Topic name" "Keywords to Search"
+
+6.Go to Elasticsearch bin folder and run the following file
+	elasticsearch.bat
+
+7.Go to Kibana bin folder and run the following file
+	kibana.bat
+
+8.Go to logstsh root directory and execute the below command
+	bin\logstash -f ".\xxx\xxx\Logstash-conffile.conf"   
+	(In Quotes Path to logstash conf file with extension .conf and it should have topic name created earlier)
+
+9.Now You can be able to go to http://localhost:5601 and use Kibana to visualize the data in real-time. You will have to search for the appropriate 
+  topic index to create the index pattern,which is the topic index in the logstash config file. You can use multiple timeline filters and individual 
+  Sentiment filters for the analysis.
+
+
+
+bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic "India"
+bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic India
+bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic "" --from-beginning
+
+
+bin\logstash -f  .\config\logstash-sample.conf
