@@ -1,0 +1,16 @@
+To run the Project:
+	Arguments on AWS: "InputDir" "OutputDir"
+
+
+For building project from command line:(If Required) Use the Given Source code and build.sbt file to create a project and follow the steps
+ 1.Go to project root directory in command prompt and build by following commands
+    >sbt
+ 2.After sbt 
+    > assembly
+This will create a fat jar file containing all the dependencies.
+
+
+Running the Project From Command Line:
+Spark-submit with following command with path to the Jar file and InputDirectory as one argument and OutputDirectory as another Argument
+		
+        spark-submit --class GraphX ".\xxx\xxx\GraphX-assembly-0.1.jar" "InputDir" "OutputDir"
